@@ -1,8 +1,8 @@
 version: "1"
 packages:
   - name: "db"
-    path: "./db/queries"
-    queries: "./db/queries/sql"
-    schema: "./db/schema"
+    path: "./internal/scoreboard/db"
+    queries: "./internal/scoreboard/db"
+    schema: "./internal/scoreboard/db"
     engine: "postgresql"
     sql_package: "pgx/v4"
