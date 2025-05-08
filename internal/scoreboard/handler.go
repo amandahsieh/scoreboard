@@ -30,16 +30,14 @@ func (ctrl *Handler) ListHandler(w http.ResponseWriter) {
 }
 
 func (ctrl *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
-	var request struct {
-		Name string `json:"name"`
-	}
+	var request Request
 	// Decode incoming request and save to defined struct
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	if request.Name == "" {
-		log.Println("Received request with empty name")
+	if err := ValidateScoreboardRequest(&request); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 	log.Println("Received request with name:", request.Name)
@@ -83,10 +81,12 @@ func (ctrl *Handler) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	var request struct {
-		Name string `json:"name"`
-	}
+	var request Request
 	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if err := ValidateScoreboardRequest(&request); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
