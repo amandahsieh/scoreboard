@@ -20,19 +20,21 @@ func main() {
 	scoreboardService := scoreboard.NewScoreboardService(db.New(conn))
 	scoreboardHandler := scoreboard.NewScoreboardHandler(scoreboardService)
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		switch r.Method {
-		case http.MethodGet:
-			scoreboardHandler.ListHandler(w)
-		case http.MethodPost:
-			scoreboardHandler.CreateHandler(w, r)
-		default:
-			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		}
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+		scoreboardHandler.ListHandler(w)
+	})
+	mux.HandleFunc("POST /api/scoreboards/", func(w http.ResponseWriter, r *http.Request) {
+		scoreboardHandler.CreateHandler(w, r)
+	})
+	mux.HandleFunc("GET /api/scoreboards/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		fmt.Println(id)
+		scoreboardHandler.GetByIDHandler(w, r)
 	})
 
 	fmt.Println("Server starting on port 8080...")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8080", mux); err != nil {
 		log.Fatalf("Unable to start server: %v\n", err)
 	}
 }

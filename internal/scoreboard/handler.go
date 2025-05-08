@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type Handler struct {
@@ -55,27 +56,26 @@ func (ctrl *Handler) CreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-//func (ctrl *ScoreboardHandler) GetByIDHandler(w http.ResponseWriter, r *http.Request) {
-//	idStr := r.URL.Query().Get("id")
-//	id, err := strconv.Atoi(idStr)
-//	if err != nil {
-//		http.Error(w, "Invalid ID format", http.StatusBadRequest)
-//		return
-//	}
-//
-//	scoreboard, err := ctrl.Service.GetScoreboardByID(int32(id))
-//	if err != nil {
-//		http.Error(w, err.Error(), http.StatusNotFound)
-//		return
-//	}
-//
-//	w.Header().Set("Content-Type", "application/json")
-//	w.WriteHeader(http.StatusOK)
-//	if err := json.NewEncoder(w).Encode(scoreboard); err != nil {
-//		http.Error(w, err.Error(), http.StatusInternalServerError)
-//	}
-//}
-//
+func (ctrl *Handler) GetByIDHandler(w http.ResponseWriter, r *http.Request) {
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	scoreboard, err := ctrl.Service.GetScoreboardByID(int32(id))
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(scoreboard); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 //func (ctrl *ScoreboardHandler) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 //	idStr := r.URL.Query().Get("id")
 //	id, err := strconv.Atoi(idStr)

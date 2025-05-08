@@ -55,3 +55,19 @@ func (q *Queries) GetAllScoreboards(ctx context.Context) ([]Scoreboard, error) {
 	}
 	return items, nil
 }
+
+const getScoreboardByID = `-- name: GetScoreboardByID :one
+SELECT id, name, createdat, updatedat FROM scoreboards WHERE id = $1
+`
+
+func (q *Queries) GetScoreboardByID(ctx context.Context, id int32) (Scoreboard, error) {
+	row := q.db.QueryRow(ctx, getScoreboardByID, id)
+	var i Scoreboard
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}

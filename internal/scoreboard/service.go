@@ -34,6 +34,16 @@ func (s *Service) CreateScoreboard(name string) (db.Scoreboard, error) {
 	return scoreboard, nil
 }
 
+func (s *Service) GetScoreboardByID(id int32) (db.Scoreboard, error) {
+	ctx := context.Background()
+	scoreboard, err := s.Queries.GetScoreboardByID(ctx, id)
+	if err != nil {
+		log.Println("Error fetching scoreboard:", err)
+		return db.Scoreboard{}, err
+	}
+	return scoreboard, nil
+}
+
 //
 //func (s *ScoreboardService) GetScoreboardByID(id int32) (db.Scoreboard, error) {
 //	ctx := context.Background()
