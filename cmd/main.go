@@ -30,8 +30,11 @@ func main() {
 	mux.HandleFunc("GET /api/scoreboards/{id}", func(w http.ResponseWriter, r *http.Request) {
 		scoreboardHandler.GetByIDHandler(w, r)
 	})
-	mux.HandleFunc("POST /api/scoreboards/{id}", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("PUT /api/scoreboards/{id}", func(w http.ResponseWriter, r *http.Request) {
 		scoreboardHandler.UpdateHandler(w, r)
+	})
+	mux.HandleFunc("DELETE /api/scoreboards/{id}", func(w http.ResponseWriter, r *http.Request) {
+		scoreboardHandler.DeleteHandler(w, r)
 	})
 
 	fmt.Println("Server starting on port 8080...")

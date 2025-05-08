@@ -58,20 +58,16 @@ func (s *Service) UpdateScoreboard(id int32, name string) (db.Scoreboard, error)
 	return scoreboard, err
 }
 
-//func (s *ScoreboardService) UpdateScoreboard(id int32, name string) (db.Scoreboard, error) {
-//	ctx := context.Background()
-//	params := queries.UpdateScoreboardParams{
-//		ID:   id,
-//		Name: name,
-//	}
-//	scoreboard, err := s.Queries.UpdateScoreboard(ctx, params)
-//	if err != nil {
-//		log.Println("Error updating scoreboard:", err)
-//		return queries.Scoreboard{}, err
-//	}
-//	return scoreboard, nil
-//}
-//
+func (s *Service) DeleteScoreboard(id int32) error {
+	ctx := context.Background()
+	err := s.Queries.DeleteScoreboard(ctx, id)
+	if err != nil {
+		log.Println("Error deleting scoreboard:", err)
+		return err
+	}
+	return nil
+}
+
 //func (s *ScoreboardService) DeleteScoreboard(id int32) error {
 //	ctx := context.Background()
 //	err := s.Queries.DeleteScoreboard(ctx, id)

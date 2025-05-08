@@ -27,6 +27,15 @@ func (q *Queries) CreateScoreboard(ctx context.Context, name string) (Scoreboard
 	return i, err
 }
 
+const deleteScoreboard = `-- name: DeleteScoreboard :exec
+DELETE FROM scoreboards WHERE id = $1
+`
+
+func (q *Queries) DeleteScoreboard(ctx context.Context, id int32) error {
+	_, err := q.db.Exec(ctx, deleteScoreboard, id)
+	return err
+}
+
 const getAllScoreboards = `-- name: GetAllScoreboards :many
 SELECT id, name, createdat, updatedat FROM scoreboards ORDER BY id
 `

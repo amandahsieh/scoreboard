@@ -14,3 +14,6 @@ UPDATE scoreboards
 SET name = $2, updatedAt = NOW()
 WHERE id = $1
     RETURNING *;
+
+-- name: DeleteScoreboard :exec
+DELETE FROM scoreboards WHERE id = $1;
