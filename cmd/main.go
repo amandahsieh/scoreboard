@@ -7,8 +7,8 @@ import (
 	"log"
 	"net/http"
 	"scoreboard/config"
-	db "scoreboard/db/queries"
 	"scoreboard/internal/scoreboard"
+	"scoreboard/internal/scoreboard/db"
 )
 
 func main() {
@@ -20,8 +20,16 @@ func main() {
 	scoreboardService := scoreboard.NewScoreboardService(db.New(conn))
 	scoreboardHandler := scoreboard.NewScoreboardHandler(scoreboardService)
 
-	// 設定路由
-	http.HandleFunc("/", scoreboardHandler.ListHandler)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			scoreboardHandler.ListHandler(w)
+		case http.MethodPost:
+			scoreboardHandler.CreateHandler(w, r)
+		default:
+			http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
+		}
+	})
 
 	fmt.Println("Server starting on port 8080...")
 	if err := http.ListenAndServe(":8080", nil); err != nil {

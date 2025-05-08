@@ -9,6 +9,24 @@ import (
 	"context"
 )
 
+const createScoreboard = `-- name: CreateScoreboard :one
+INSERT INTO scoreboards (name)
+VALUES ($1)
+    RETURNING id, name, createdat, updatedat
+`
+
+func (q *Queries) CreateScoreboard(ctx context.Context, name string) (Scoreboard, error) {
+	row := q.db.QueryRow(ctx, createScoreboard, name)
+	var i Scoreboard
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}
+
 const getAllScoreboards = `-- name: GetAllScoreboards :many
 SELECT id, name, createdat, updatedat FROM scoreboards
 `

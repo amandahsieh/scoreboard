@@ -6,15 +6,15 @@ import (
 	"scoreboard/internal/scoreboard/db"
 )
 
-type ScoreboardService struct {
+type Service struct {
 	Queries *db.Queries
 }
 
-func NewScoreboardService(queries *db.Queries) *ScoreboardService {
-	return &ScoreboardService{Queries: queries}
+func NewScoreboardService(queries *db.Queries) *Service {
+	return &Service{Queries: queries}
 }
 
-func (s *ScoreboardService) ListAllScoreboards() ([]db.Scoreboard, error) {
+func (s *Service) ListAllScoreboards() ([]db.Scoreboard, error) {
 	ctx := context.Background()
 	scoreboards, err := s.Queries.GetAllScoreboards(ctx)
 	if err != nil {
@@ -24,15 +24,16 @@ func (s *ScoreboardService) ListAllScoreboards() ([]db.Scoreboard, error) {
 	return scoreboards, nil
 }
 
-//func (s *ScoreboardService) CreateScoreboard(name string) (db.Scoreboard, error) {
-//	ctx := context.Background()
-//	scoreboard, err := s.Queries.CreateScoreboard(ctx, name)
-//	if err != nil {
-//		log.Println("Error creating scoreboard:", err)
-//		return db.Scoreboard{}, err
-//	}
-//	return scoreboard, nil
-//}
+func (s *Service) CreateScoreboard(name string) (db.Scoreboard, error) {
+	ctx := context.Background()
+	scoreboard, err := s.Queries.CreateScoreboard(ctx, name)
+	if err != nil {
+		log.Println("Error creating scoreboard:", err)
+		return db.Scoreboard{}, err
+	}
+	return scoreboard, nil
+}
+
 //
 //func (s *ScoreboardService) GetScoreboardByID(id int32) (db.Scoreboard, error) {
 //	ctx := context.Background()
