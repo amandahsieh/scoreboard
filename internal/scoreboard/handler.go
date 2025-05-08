@@ -76,6 +76,36 @@ func (ctrl *Handler) GetByIDHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func (ctrl *Handler) UpdateHandler(w http.ResponseWriter, r *http.Request) {
+	idStr := r.PathValue("id")
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	var request struct {
+		Name string `json:"name"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	if request.Name == "" {
+		http.Error(w, "Received request with empty name", http.StatusBadRequest)
+		return
+	}
+	scoreboard, err := ctrl.Service.UpdateScoreboard(int32(id), request.Name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(scoreboard); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+}
+
 //func (ctrl *ScoreboardHandler) UpdateHandler(w http.ResponseWriter, r *http.Request) {
 //	idStr := r.URL.Query().Get("id")
 //	id, err := strconv.Atoi(idStr)

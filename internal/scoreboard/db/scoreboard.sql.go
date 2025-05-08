@@ -28,7 +28,7 @@ func (q *Queries) CreateScoreboard(ctx context.Context, name string) (Scoreboard
 }
 
 const getAllScoreboards = `-- name: GetAllScoreboards :many
-SELECT id, name, createdat, updatedat FROM scoreboards
+SELECT id, name, createdat, updatedat FROM scoreboards ORDER BY id
 `
 
 func (q *Queries) GetAllScoreboards(ctx context.Context) ([]Scoreboard, error) {
@@ -62,6 +62,30 @@ SELECT id, name, createdat, updatedat FROM scoreboards WHERE id = $1
 
 func (q *Queries) GetScoreboardByID(ctx context.Context, id int32) (Scoreboard, error) {
 	row := q.db.QueryRow(ctx, getScoreboardByID, id)
+	var i Scoreboard
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Createdat,
+		&i.Updatedat,
+	)
+	return i, err
+}
+
+const updateScoreboard = `-- name: UpdateScoreboard :one
+UPDATE scoreboards
+SET name = $2, updatedAt = NOW()
+WHERE id = $1
+    RETURNING id, name, createdat, updatedat
+`
+
+type UpdateScoreboardParams struct {
+	ID   int32
+	Name string
+}
+
+func (q *Queries) UpdateScoreboard(ctx context.Context, arg UpdateScoreboardParams) (Scoreboard, error) {
+	row := q.db.QueryRow(ctx, updateScoreboard, arg.ID, arg.Name)
 	var i Scoreboard
 	err := row.Scan(
 		&i.ID,

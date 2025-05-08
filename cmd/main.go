@@ -28,9 +28,10 @@ func main() {
 		scoreboardHandler.CreateHandler(w, r)
 	})
 	mux.HandleFunc("GET /api/scoreboards/{id}", func(w http.ResponseWriter, r *http.Request) {
-		id := r.PathValue("id")
-		fmt.Println(id)
 		scoreboardHandler.GetByIDHandler(w, r)
+	})
+	mux.HandleFunc("POST /api/scoreboards/{id}", func(w http.ResponseWriter, r *http.Request) {
+		scoreboardHandler.UpdateHandler(w, r)
 	})
 
 	fmt.Println("Server starting on port 8080...")
